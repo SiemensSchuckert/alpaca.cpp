@@ -34,6 +34,19 @@ make chat
 ```
 
 
+## Building from Source (Windows MINGW)
+
+- Install MSYS2 (www.msys2.org)
+- Place sources into C:\msys64\home\\_USERNAME_\alpaca.cpp\
+- Inside UCRT64 terminal run:
+```
+pacman -S mingw-w64-ucrt-x86_64-gcc
+pacman -S make
+cd alpaca.cpp
+make
+```
+- `chat.exe` should appear there C:\msys64\home\\_USERNAME_\alpaca.cpp\chat.exe
+
 ## Building from Source (Windows)
 
 - Download and install CMake: <https://cmake.org/download/>
