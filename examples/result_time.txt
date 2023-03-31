@@ -1,0 +1,31 @@
+Xeon(R) CPU E3-1245 V2
+chat.exe -s 42 --top_p 2 --top_k 160 --n_predict 100 --temp 0.50 --repeat_penalty 1.1 -i -c 5121 --repeat_last_n 128 -p "write a letter to my girlfriend Anna to thank her for the wonderful night" -m ggml-alpaca-7b-q4.bin
+
+main: seed = 42
+llama_model_load: loading model from 'ggml-alpaca-7b-q4.bin' - please wait ...
+llama_model_load: ggml ctx size = 9138.34 MB
+llama_model_load: memory_size =  5121.00 MB, n_mem = 163872
+llama_model_load: loading model part 1/1 from 'ggml-alpaca-7b-q4.bin'
+llama_model_load: .................................... done
+llama_model_load: model size =  4017.27 MB / num tensors = 291
+
+system_info: n_threads = 4 / 8 | AVX = 1 | AVX2 = 0 | AVX512 = 0 | FMA = 0 | NEON = 0 | ARM_FMA = 0 | F16C = 1 | FP16_VA = 0 | WASM_SIMD = 0 | BLAS = 0 | SSE3 = 1 | VSX = 0 | 
+sampling parameters: temp = 0.500000, top_k = 160, top_p = 2.000000, repeat_last_n = 128, repeat_penalty = 1.100000
+
+
+Dearest Ana,
+
+I want to take this opportunity to thank you for an amazing night together. It was so incredibly special and I am truly grateful for your presence in my life. You made me feel like I had never felt before. Your empathy, compassion, and sense of humor are unparalleled and it's always such a joy to be with you.
+
+Thank you again for making last night one I will cherish forever. I can't wait to see you soon!
+
+Love,
+John [end of text]
+
+
+main: mem per token = 14401444 bytes
+main:     load time =  1601.09 ms
+main:   sample time =   163.17 ms
+main:  predict time = 59207.15 ms / 408.33 ms per token
+main:    total time = 62586.30 ms
+
