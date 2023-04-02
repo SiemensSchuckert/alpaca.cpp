@@ -8,30 +8,33 @@ Run a fast ChatGPT-like model locally on your device. The screencast below is no
 
 This combines the [LLaMA foundation model](https://github.com/facebookresearch/llama) with an [open reproduction](https://github.com/tloen/alpaca-lora) of [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca) a fine-tuning of the base model to obey instructions (akin to the [RLHF](https://huggingface.co/blog/rlhf) used to train ChatGPT) and a set of modifications to [llama.cpp](https://github.com/ggerganov/llama.cpp) to add a chat interface. 
 
-## Get Started (7B)
+## Get Started
 
-Download the zip file corresponding to your operating system from the [latest release](https://github.com/antimatter15/alpaca.cpp/releases/latest). On Windows, download `alpaca-win.zip`, on Mac (both Intel or ARM) download `alpaca-mac.zip`, and on Linux (x64) download `alpaca-linux.zip`. 
-
-Download `ggml-alpaca-7b-q4.bin` and place it in the same folder as the `chat` executable in the zip file. There are several options: 
-
-Once you've downloaded the model weights and placed them into the same directory as the `chat` or `chat.exe` executable, run:
+Download `ggml-alpaca-7b-q4.bin` place it in the same folder as the `chat` or `chat.exe` executable, and run:
 
 ```
-./chat
+chat.exe
 ```
+to set number of threads:
+```
+chat.exe -t 8
+```
+additional options list:
+```
+chat.exe --help
+```
+
+If you have more than 10GB of RAM, you can use the higher quality 13B `ggml-alpaca-13b-q4.bin` model.
+Once you've downloaded the weights, you can run the following command to enter chat
+
+```
+chat.exe -m ggml-alpaca-13b-q4.bin
+```
+
+If you have more than 32GB of RAM (and a beefy CPU), you can use the higher quality 30B `ggml-alpaca-30b-q4.bin` model.
+
 
 The weights are based on the published fine-tunes from `alpaca-lora`, converted back into a pytorch checkpoint with a [modified script](https://github.com/tloen/alpaca-lora/pull/19) and then quantized with llama.cpp the regular way. 
-
-## Building from Source (MacOS/Linux)
-
-
-```sh
-git clone https://github.com/antimatter15/alpaca.cpp
-cd alpaca.cpp
-
-make chat
-./chat
-```
 
 
 ## Building from Source (Windows MINGW)
@@ -46,27 +49,6 @@ cd alpaca.cpp
 make
 ```
 - `chat.exe` should appear there C:\msys64\home\\_USERNAME_\alpaca.cpp\chat.exe
-
-## Building from Source (Windows)
-
-- Download and install CMake: <https://cmake.org/download/>
-- Download and install `git`. If you've never used git before, consider a GUI client like <https://desktop.github.com/>
-- Clone this repo using your git client of choice (for GitHub Desktop, go to File -> Clone repository -> From URL and paste `https://github.com/antimatter15/alpaca.cpp` in as the URL)
-- Open a Windows Terminal inside the folder you cloned the repository to
-- Run the following commands one by one:
-
-```ps1
-cmake .
-cmake --build . --config Release
-```
-
-- Download the weights via any of the links in "Get started" above, and save the file as `ggml-alpaca-7b-q4.bin` in the main Alpaca directory.
-- In the terminal window, run this command:
-```ps1
-.\Release\chat.exe
-```
-- (You can add other launch options like `--n 8` as preferred onto the same line)
-- You can now type to the AI in the terminal and it will reply. Enjoy!
 
 ## Credit
 
