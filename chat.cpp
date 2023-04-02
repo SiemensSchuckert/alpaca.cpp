@@ -1,7 +1,5 @@
 #include "ggml.h"
-
 #include "utils.h"
-
 #include <cassert>
 #include <cmath>
 #include <cstdio>
@@ -10,6 +8,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <cinttypes>
 
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
 #include <signal.h>
@@ -302,8 +301,8 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
         const int n_layer = hparams.n_layer;
         const int n_ctx   = hparams.n_ctx;
 
-        const int n_mem      = n_layer*n_ctx;
-        const int n_elements = n_embd*n_mem;
+    const int64_t n_mem      = (int64_t)n_layer*n_ctx;
+    const int64_t n_elements = n_embd*n_mem;
 
         model.memory_k = ggml_new_tensor_1d(ctx, GGML_TYPE_F32, n_elements);
         model.memory_v = ggml_new_tensor_1d(ctx, GGML_TYPE_F32, n_elements);
@@ -417,7 +416,7 @@ bool llama_model_load(const std::string & fname, llama_model & model, gpt_vocab 
 
                 if (n_dims == 1) {
                     if (tensor->ne[0] != ne[0] || tensor->ne[1] != ne[1]) {
-                        fprintf(stderr, "%s: tensor '%s' has wrong shape in model file: got [%d, %d], expected [%d, %d]\n",
+                fprintf(stderr, "%s: tensor '%s' has wrong shape in model file: got [%" PRId64 ", %" PRId64 "], expected [%d, %d]\n",
                                 __func__, name.data(), tensor->ne[0], tensor->ne[1], ne[0], ne[1]);
                         return false;
                     }
@@ -561,12 +560,18 @@ bool llama_eval(
 
         // reallocate
         buf_size = buf_size_new;
-        buf = realloc(buf, buf_size);
-        if (buf == nullptr) {
-            fprintf(stderr, "%s: failed to allocate %zu bytes\n", __func__, buf_size);
-            return false;
+        
+         void * tmp = realloc(buf, buf_size);
+         if (NULL == tmp)
+        {
+          fprintf(stderr, "%s: failed to allocate %zu bytes\n", __func__, buf_size);
+          return false;
         }
-    }
+         else
+        {
+         buf = tmp;
+        } 
+   }
 
     struct ggml_init_params params = {
         /*.mem_size   =*/ buf_size,
@@ -762,11 +767,7 @@ static bool is_interacting = false;
 void sigint_handler(int signo) {
     printf(ANSI_COLOR_RESET);
     if (signo == SIGINT) {
-        if (!is_interacting) {
-            is_interacting=true;
-        } else {
-            _exit(130);
-        }
+        _exit(130);
     }
 }
 #endif
@@ -923,7 +924,7 @@ int main(int argc, char ** argv) {
     if (params.interactive) {
         fprintf(stderr, "== Running in chat mode. ==\n"
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__)) || defined (_WIN32)
-               " - Press Ctrl+C to interject at any time.\n"
+               " - Press ESC to interject at any time.\n"
 #endif
                " - Press Return to return control to LLaMA.\n"
                " - If you want to submit another line, end your input in '\\'.\n");
@@ -947,6 +948,10 @@ int main(int argc, char ** argv) {
     
 
     while (remaining_tokens > 0) {
+
+        if (GetAsyncKeyState(VK_ESCAPE)){
+            is_interacting = true;
+        }
         // predict
         if (embd.size() > 0) {
             const int64_t t_start_us = ggml_time_us();
